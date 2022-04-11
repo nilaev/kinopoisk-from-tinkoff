@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тинькофф Прокат</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="index.js"></script>
+</head>
+<body>
+<main class="base search">
+    <img src="img/base/logo.svg" class="base__logo" alt="logo">
+    <section class="base__search-box search-box">
+
+        <img src="img/search-box/lens.svg" class="search-box__lens search-box__lens--location" alt="lens">
+        <input class="search-box__input search-box__input--location" placeholder="Поиск фильмов по жанрам и актерам">
+        <button type="button" class="search-box__cross">
+            <img src="img/search-box/cross-gray.svg" class="search-box__cross__img" alt="cross">
+            <img src="img/search-box/cross-white.svg"
+                 class="search-box__cross__img search-box__cross__img--display" alt="cross">
+        </button>
+        <hr class="search-box__line search-box__line--color_location">
+    </section>
+
+    <section class="base__suggestions-box">
+        <button type="button" class="base__suggestions-box__button">Как я встретил мамку</button>
+        <button type="button" class="base__suggestions-box__button">matrix</button>
+        <button type="button" class="base__suggestions-box__button">Весенний дрозд</button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">
+            Белоснежка и семь гномов
+        </button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">Трое в
+            лодке
+        </button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">
+            Бандитский петербург
+        </button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">Спящая
+            женщина и принц
+        </button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">Война
+            миров
+        </button>
+        <button type="button"
+                class="base__suggestions-box__button base__suggestions-box__button--more_history">Дикий
+            дикий дикий запад
+        </button>
+    </section>
+    <p class="base__result_info base__result_info--not_found">Мы не поняли о чем речь ¯\_(ツ)_/¯</p>
+    <p class="base__result_info base__result_info--counter">Нашли 82 фильма</p>
+
+    <section class="base__results results">
+
+        <button type="button" class="results__card card">
+            <img src="img/results/01.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score5.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">8,9</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Форрест Гамп</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Драма, мелодрама</p>
+                    <p class="card__info__category card__info__category--text-margins">1994</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <img src="img/results/02.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score5.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">8,2</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Спасти рядового Райана</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Военный, драма</p>
+                    <p class="card__info__category card__info__category--text-margins">1998</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <img src="img/results/03.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score4.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">7,7</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Аполлон 13</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Драма, приключения</p>
+                    <p class="card__info__category card__info__category--text-margins">1995</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <img src="img/results/04.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score3.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">6,4</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Инферно</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Боевик, триллер</p>
+                    <p class="card__info__category card__info__category--text-margins">2016</p>
+                </div>
+            </div>
+        </button>
+
+
+        <button type="button" class="results__card card">
+            <div class="card__info card__info--z-index-1">
+                <p class="card__info__name card__info__name--gray">Шпионский мост</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Боевик, триллер</p>
+                    <p class="card__info__category card__info__category--text-margins">2017</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <img src="img/results/05.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score4.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">7,4</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Чудо на гудзоне</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Драма, биография</p>
+                    <p class="card__info__category card__info__category--text-margins">2016</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <img src="img/results/06.png" class="card__img" alt="movie"/>
+            <div class="card__info card__info--background-gradient">
+                <div class="card__info__rating">
+                    <img src="img/results/score5.svg" class="card__info__rating__img" alt="score5">
+                    <p class="card__info__rating__number">8,1</p>
+                </div>
+                <p class="card__info__name card__info__name--white">Терминал</p>
+                <div class="card__info__category">
+                    <p class="card__info__category card__info__category--text-margins">Драма, мелодрама</p>
+                    <p class="card__info__category card__info__category--text-margins">2004</p>
+                </div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+        <button type="button" class="results__card card">
+            <div class="card__no-info__loading-area">
+                <div class="card__no_info--upper"></div>
+                <div class="card__no_info--lower"></div>
+            </div>
+        </button>
+
+    </section>
+
+    <footer class="base__footer">
+        <p class="base__footer__text">© 2022 Тинькофф Прокат</p>
+    </footer>
+
+</main>
+</body>
+</html>
