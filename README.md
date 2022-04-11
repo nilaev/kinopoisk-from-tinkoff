@@ -1,0 +1,1 @@
+# kinopoisk-from-tinkoff
