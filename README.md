@@ -1,5 +1,6 @@
 # Тинькофф Прокат
-Реализовать базовый функционал сайта [Кинопоиск](https://hd.kinopoisk.ru/). За основу взять [макеты](https://www.figma.com/file/C2mEGWuoABmUq2wel1UlFuKX/tfschool→front-end). 
+Реализовать базовый функционал сайта [Кинопоиск](https://hd.kinopoisk.ru/). За основу взять [макеты](https://www.figma.com/file/C2mEGWuoABmUq2wel1UlFuKX/tfschool→front-end).
+![пример работы приложения](./img/base/work-example.gif)
 
 ## Верстка
 Должна содержать следующие состояния:

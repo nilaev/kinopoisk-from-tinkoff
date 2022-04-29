@@ -1,3 +1,15 @@
+// import {makeRequests} from "./makeRequests";
+
+function loadingCircle() {
+    document.body.classList.add('loaded_hiding');
+    window.setTimeout(function () {
+        document.body.classList.add('loaded');
+        document.body.classList.remove('loaded_hiding');
+    }, 500);
+}
+
+window.onload = loadingCircle;
+
 const searchBoxInput = document.querySelector('.search-box__input');
 const baseResults = document.querySelector('.base__results');
 const baseSuggestionsBox = document.querySelector('.base__suggestions-box');
@@ -25,11 +37,20 @@ searchBoxInput.addEventListener('click', () => {
     renderSuggestionsBox();
 });
 searchBoxInput.addEventListener('input', () => searchBoxInput.style.color = "white");
-searchBoxInput.addEventListener('keydown', async function (event) {
-    if (event.keyCode === 13) {
-        searchByValue(this.value.toString())
+searchBoxInput.addEventListener('input', debounce(async function () {
+    searchByValue(this.value.toString())
+}, 1000));
+
+function debounce(f, t) {
+    return function (args) {
+        let previousCall = this.lastCall;
+        this.lastCall = Date.now();
+        if (previousCall && ((this.lastCall - previousCall) <= t)) {
+            clearTimeout(this.lastCallTimer);
+        }
+        this.lastCallTimer = setTimeout(() => f.apply(this, args), t);
     }
-});
+}
 
 function searchByValue(value) {
     let valueIndex = searches.indexOf(value);
@@ -40,31 +61,49 @@ function searchByValue(value) {
     renderSuggestionsBox();
 
     searchOmdbapi(value).then(res => {
-        if (res.hasOwnProperty('error')) {
-            document.body.classList.remove('search_live')
-            document.body.classList.add('search_not_found');
-            console.log(res['error']);
-        } else {
-            showResultCards(res);
-            document.body.classList.remove('search_not_found');
-            document.body.classList.add('search_live')
-        }
+        showResultCards(res);
+        document.body.classList.remove('search_not_found');
+        document.body.classList.add('search_live')
+    }).catch(e => {
+        document.body.classList.remove('search_live')
+        document.body.classList.add('search_not_found');
+        console.log(e);
     });
+}
+
+function cachingDecorator(func) {
+    let cache = new Map();
+    return function (x) {
+        console.log(cache);
+        if (cache.has(x)) {
+            return cache.get(x);
+        }
+        let result = func.call(this, x);
+        cache.set(x, result);
+        return result;
+    };
 }
 
 async function searchOmdbapi(searchTerm) {
     try {
         const data = await fetch(`http://www.omdbapi.com/?s=${searchTerm}&plot=full&apikey=a0625832`).then(r => r.json());
-        return data.Response === 'True' ? data : {error: data.Error};
+        return data.Response === 'True' ? data : data.Error;
     } catch (error) {
         return {error};
     }
 }
 
+searchOmdbapi = cachingDecorator(searchOmdbapi);
+
 function showResultCards(data) {
     document.querySelector('.base__result_info--counter').textContent = `Нашли ${data['totalResults']} фильмов`;
     baseResults.replaceChildren();
-    for (const elem of data['Search']) {
+    const urlsArray = [];
+
+    for (let i = 0; i < data['Search'].length; i++) {
+        const elem = data['Search'][i];
+        urlsArray.push(`https://www.omdbapi.com/?i=${elem.imdbID}&apikey=a0625832`);
+
         sessionStorage.setItem('curStatus', 'ready');
         sessionStorage.setItem('input', JSON.stringify(searchBoxInput.value));
         sessionStorage.setItem('searches', JSON.stringify(searches));
@@ -73,6 +112,10 @@ function showResultCards(data) {
                     onclick="document.location.href = 'https://www.imdb.com/title/${elem.imdbID}/';">
                     <img src=${elem.Poster} class="card__img" alt="movie"/>
                     <div class="card__info card__info--background-gradient">
+                        <div class="card__info__rating">
+                            <img class="card__info__rating__img" id='rating-img-${i}'>
+                            <p class="card__info__rating__number" id='rating-number-${i}'></p>
+                        </div>
                         <p class="card__info__name card__info__name--white">${elem.Title}</p>
                         <div class="card__info__category">
                             <p class="card__info__category card__info__category--text-margins">${elem.Type}</p>
@@ -81,6 +124,32 @@ function showResultCards(data) {
                     </div>
                 </button>`);
     }
+
+    makeRequests(urlsArray, urlsArray.length).then(res => {
+        let i = 0;
+        for (const re of res) {
+            const ratingNumber = Number(re.imdbRating);
+            let ratingImg = 'img/results/';
+            if (ratingNumber > 7.9) {
+                ratingImg += 'score5.svg';
+            } else if (ratingNumber > 5.9) {
+                ratingImg += 'score4.svg';
+            } else if (ratingNumber > 3.9) {
+                ratingImg += 'score3.svg';
+            } else if (ratingNumber > 1.9) {
+                ratingImg += 'score2.svg';
+            } else {
+                ratingImg += 'score1.svg';
+            }
+
+            console.log(ratingImg, ratingNumber);
+            let idRatingImg = document.querySelector(`#rating-img-${i}`);
+            let idRatingNum = document.querySelector(`#rating-number-${i}`);
+            idRatingImg.src = ratingImg;
+            idRatingNum.textContent = `${ratingNumber}`;
+            i++;
+        }
+    });
 }
 
 document.querySelector('.search-box__cross').addEventListener('click', function () {
@@ -99,7 +168,7 @@ function renderSuggestionsBox() {
                 id="suggestions-box-button-${i}">${searches[i]}</button>`);
     }
     for (let i = 0; i < searches.length; i++) {
-        document.querySelector(`#suggestions-box-button-${i}`).addEventListener('dblclick',  () => {
+        document.querySelector(`#suggestions-box-button-${i}`).addEventListener('dblclick', () => {
             searches.splice(i, 1);
             renderSuggestionsBox();
         });
@@ -115,5 +184,75 @@ function suggestionsBoxButtonSearch(text) {
     searchByValue(searchBoxInput.value);
 }
 
+
+const makeRequests = (urls, maxRequests) => {
+    const ans = Array(urls.length)
+        .fill(null);
+
+    // eslint-disable-next-line no-use-before-define
+    const urlsMap = countUrlsMap(urls);
+
+    const uniqueUrls = Object.keys(urlsMap);
+
+    let countRequests = 0;
+
+    let countResponses = 0;
+
+    // eslint-disable-next-line no-param-reassign
+    maxRequests = Math.floor(maxRequests);
+
+    return new Promise(resolve => {
+        for (let i = 0; i < Math.min(maxRequests, uniqueUrls.length); i++) {
+            // eslint-disable-next-line no-use-before-define
+            request();
+        }
+
+        function request() {
+            // eslint-disable-next-line no-plusplus
+            const url = uniqueUrls[countRequests++];
+
+            // eslint-disable-next-line no-return-assign
+            urlsMap[url].forEach(n => ans[n] = 'in progress');
+
+            fetch(url)
+                .then(res => res.json())
+                .catch(_ => 'Error')
+                .then(res => {
+                    // eslint-disable-next-line no-use-before-define,no-return-assign
+                    urlsMap[url].forEach(n => ans[n] = res);
+
+                    // eslint-disable-next-line no-plusplus
+                    if (++countResponses === uniqueUrls.length) {
+                        resolve(ans);
+                        setTimeout(() => {
+                        }, 5000);
+                        // eslint-disable-next-line no-shadow
+                        // callback(new Promise(res => res(ans)));
+                    } else if (countRequests < uniqueUrls.length) {
+                        request();
+                    }
+                });
+
+            setTimeout(() => {
+            }, 5000);
+            // eslint-disable-next-line no-console
+            // callback(new Promise(res => res(ans)));
+        }
+    });
+};
+
+export function countUrlsMap(urls) {
+    const urlsMap = {};
+
+    for (let i = 0; i < urls.length; i++) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (urlsMap.hasOwnProperty(urls[i])) {
+            urlsMap[urls[i]].push(i);
+        } else {
+            urlsMap[urls[i]] = [i];
+        }
+    }
+    return urlsMap;
+}
 
 
